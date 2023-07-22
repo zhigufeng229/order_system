@@ -10,6 +10,18 @@ spring:
       url: jdbc:mysql://localhost:3306/order_system?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
       username: root
       password: 123456
+  redis:
+    host: 192.168.163.139
+    port: 6379
+    password: 123456
+    database: 1
+    lettuce:
+      pool:
+        max-active: 8     #最大连接
+        max-idle: 8      #最大空闲连接
+        min-idle: 0      #最小空闲连接
+        max-wait: 1000    #连接等待时间
+
 mybatis-plus:
   configuration:
     #在映射实体或者属性时，将数据库中表名和字段名中的下划线去掉，按照驼峰命名法映射

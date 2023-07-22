@@ -1,3 +1,5 @@
+package com.order.chandler;
+
 import org.junit.jupiter.api.Test;
 
 public class CommonControllerTest {
