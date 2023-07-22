@@ -11,6 +11,7 @@ import com.order.chandler.service.DishFlavorService;
 import com.order.chandler.service.DishService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +28,13 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Autowired
     private DishFlavorService dishFlavorService;
+
+
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+
 
     /**
      * 新增菜品，同时保存对应的口味数据
@@ -107,6 +115,7 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
      * @param ids
      */
     @Override
+    @Transactional
     public void deleteWithFlavor(List<Long> ids) {
         //条件构造器
         LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
@@ -119,6 +128,13 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
         if (count > 0){
             throw new CustomException("菜品处于正在售卖状态，不能删除");
         }
+        //清除该菜品分类下的缓存信息
+        List<Dish> dishList =this.listByIds(ids).stream().map((item)->{
+            String key = "dish_" + item.getCategoryId() + "_1";
+            redisTemplate.delete(key);
+            return item;
+        }).collect(Collectors.toList());
+
         //删除菜品信息
         this.removeByIds(ids);
 
