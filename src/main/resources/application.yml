@@ -21,6 +21,9 @@ spring:
         max-idle: 8      #最大空闲连接
         min-idle: 0      #最小空闲连接
         max-wait: 1000    #连接等待时间
+  cache:
+    redis:
+      time-to-live: 1800000   #设置缓存有效期
 
 mybatis-plus:
   configuration:
